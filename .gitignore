@@ -1,0 +1,6 @@
+# Python env
+launcher-api/
+__pycache__/
+
+#json files
+*.json
