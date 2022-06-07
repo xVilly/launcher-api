@@ -6,3 +6,5 @@ __pycache__/
 *.json
 #database files
 *.db
+#test script
+test.py
