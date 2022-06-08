@@ -8,3 +8,5 @@ __pycache__/
 *.db
 #test script
 test.py
+#configs
+config.py
