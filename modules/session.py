@@ -14,12 +14,21 @@ class Session:
 
     def Initialize():
         Session.initialized = True
-
+    
     def TokenExists(token):
         for data in Session.active_sessions:
             if 'token' in data and data['token'] == token:
                 return True
         return False
+
+    def auth_required(func):
+        """[Decorator] Checking if the function call is authorized.
+        \nHas to be called inside of an endpoint."""
+        def wrapper(*args, token="", **kwargs):
+            if token == "" or not Session.TokenExists(token):
+                abort(401, message="Authorization token is missing or is invalid")
+            func(*args, **kwargs)
+        return wrapper
 
     def UserAlreadyAuthenticated(user_id):
         for data in Session.active_sessions:
@@ -30,3 +39,5 @@ class Session:
     def RegisterSession(session_data):
         Session.active_sessions.append(session_data)
         return True
+    
+    
