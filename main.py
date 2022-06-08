@@ -4,8 +4,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from modules.database import Database
 from modules.user import CreateUserEndpoint, AuthenticationEndpoint
+from modules.session import Session
 from config import Config, ProductionConfig
-import secrets
 
 #App initialization
 app = Flask(__name__)
@@ -16,6 +16,9 @@ app.config.from_object(Config)
 Database.Initialize(app)
 db = Database.db
 bcrypt = Database.bcrypt
+
+#Sessions initialization
+Session.Initialize()
 
 # DB models
 class UserModel(db.Model):
