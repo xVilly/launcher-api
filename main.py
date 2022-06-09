@@ -3,7 +3,7 @@ from flask_restful import Api, Resource, reqparse, abort, fields, marshal_with
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from modules.database import Database
-from modules.user import CreateUserEndpoint, AuthenticationEndpoint
+from modules.user import CreateUserEndpoint, AuthenticationEndpoint, UserEndpoint, HeartBeatEndpoint
 from modules.session import Session
 from config import Config, ProductionConfig
 
@@ -32,8 +32,10 @@ Database.UserModel = UserModel
 
 
 # Endpoints
-api.add_resource(CreateUserEndpoint, "/createuser")
-api.add_resource(AuthenticationEndpoint, "/auth")
+api.add_resource(CreateUserEndpoint, "/api/createuser")
+api.add_resource(AuthenticationEndpoint, "/api/auth")
+api.add_resource(UserEndpoint, "/api/user/<int:user_id>")
+api.add_resource(HeartBeatEndpoint, "/api/hb")
 
 
 if __name__ == "__main__":

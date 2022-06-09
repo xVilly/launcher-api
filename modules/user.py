@@ -15,7 +15,7 @@ user_fields = {
 
 #* Create new user
 #* endpoint: /createuser
-#* headers: createuser_args
+#* headers: D-Username, D-Password
 
 class CreateUserEndpoint(Resource):
     def put(self):
@@ -39,7 +39,7 @@ class CreateUserEndpoint(Resource):
 
 #* User authentication
 #* endpoint: /auth
-#* headers: authentication_args
+#* headers: D-Username, D-Password
 
 class AuthenticationEndpoint(Resource):
     def get(self):
@@ -60,13 +60,38 @@ class AuthenticationEndpoint(Resource):
             if Session.TokenExists(token):
                 abort(400, message="Token already exists .. failed to authenticate")
             ip_address = request.remote_addr
-            exp = datetime.utcnow() + timedelta(minutes=30)
-            session_data = {'token':token, 'user_id':user.id, 'ip_address':ip_address, 'exp:':exp.isoformat()}
+            exp = datetime.utcnow() + timedelta(minutes=Session.TOKEN_LIFETIME_MINUTES)
+            session_data = {'token':token, 'user_id':user.id, 'ip_address':ip_address, 'exp':exp.isoformat()}
 
             if Session.RegisterSession(session_data):
-                return {'authorization_token':token, 'message':'User authenticated', 'data':session_data}, 200
+                return {'authorization_token':token, 'message':'User authenticated', 'user_name':user.name, 'exp':session_data['exp']}, 200
             else:
                 abort(400, message="Failed to authenticate .. try again later ..")
             
         else:
             abort(406, message="Password doesn't match..")
+
+#* Session heartbeat request
+#* endpoint: /hb
+#* headers: Token, New
+
+class HeartBeatEndpoint(Resource):
+    def put(self):
+        headers = request.headers
+        if 'Token' not in headers or not Session.CheckAuthorization(headers['Token'], request.remote_addr):
+            abort(401, message="Authorization token is missing or is invalid")
+        session = Session.GetSessionByToken(headers['Token'])
+        exp = datetime.utcnow() + timedelta(minutes=Session.TOKEN_LIFETIME_MINUTES)
+        session['exp'] = exp.isoformat()
+        return {'message':'Heartbeat successful', 'exp':session['exp']}, 200
+
+#* User info request (AUTHORIZATION REQUIRED)
+#* endpoint: /user/<int:user_id>
+#* headers: Token
+
+class UserEndpoint(Resource):
+    def get(self, user_id):
+        headers = request.headers
+        if 'Token' not in headers or not Session.CheckAuthorization(headers['Token'], request.remote_addr):
+            abort(401, message="Authorization token is missing or is invalid")
+        return {'session_data':Session.GetSessionByToken(headers['Token'])}
