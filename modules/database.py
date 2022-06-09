@@ -7,6 +7,7 @@ class Database:
     db = None
     bcrypt = None
     UserModel = None
+    NewsModel = None
     def Initialize(app):
         Database.db = SQLAlchemy(app)
         Database.bcrypt = Bcrypt(app)

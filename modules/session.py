@@ -26,7 +26,6 @@ class Session:
         if not Session.initialized:
             return
         # Clear inactive tokens
-        print(Session.active_sessions)
         for session in Session.active_sessions:
             if 'exp' not in session:
                 Session.active_sessions.remove(session)

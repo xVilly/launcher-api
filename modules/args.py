@@ -13,3 +13,6 @@ authentication_args = reqparse.RequestParser()
 authentication_args.add_argument("username", type=str, help="Provide user name for the authentication", required=True)
 authentication_args.add_argument("password", type=str, help="Provide user password for the authentication", required=True)
 authentication_args.add_argument("data", type=dict)
+
+news_args = reqparse.RequestParser()
+news_args.add_argument("id", type=int, help="Select news id that you want to request", required=True)
