@@ -71,7 +71,7 @@ class AuthenticationEndpoint(Resource):
         else:
             abort(406, message="Password doesn't match..")
 
-#* Session heartbeat request
+#* Session heartbeat request (AUTHORIZATION REQUIRED)
 #* endpoint: /hb
 #* headers: Token, New
 

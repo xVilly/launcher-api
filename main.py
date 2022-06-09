@@ -6,6 +6,8 @@ from modules.database import Database
 from modules.user import CreateUserEndpoint, AuthenticationEndpoint, UserEndpoint, HeartBeatEndpoint
 from modules.session import Session
 from config import Config, ProductionConfig
+from apscheduler.schedulers.background import BackgroundScheduler
+import atexit
 
 #App initialization
 app = Flask(__name__)
@@ -19,6 +21,11 @@ bcrypt = Database.bcrypt
 
 #Sessions initialization
 Session.Initialize()
+scheduler = BackgroundScheduler()
+scheduler.add_job(func=Session.Update, trigger="interval", seconds=60)
+scheduler.start()
+
+atexit.register(lambda: scheduler.shutdown())
 
 # DB models
 class UserModel(db.Model):
