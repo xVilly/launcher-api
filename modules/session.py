@@ -23,6 +23,7 @@ class Session:
         Session.initialized = True
     
     def Update():
+        """Removes unused/expired tokens"""
         if not Session.initialized:
             return
         # Clear inactive tokens
@@ -36,18 +37,21 @@ class Session:
                 continue
     
     def TokenExists(token):
+        """Checks if token exists in the session dict"""
         for data in Session.active_sessions:
             if 'token' in data and data['token'] == token:
                 return True
         return False
     
     def GetSessionByToken(token):
+        """Returns a session data (dict)"""
         for data in Session.active_sessions:
             if 'token' in data and data['token'] == token:
                 return data
         return None 
 
     def CheckAuthorization(token, ip_address):
+        """Checks if player is authorized, based on his token and IP"""
         if token == "" or not Session.TokenExists(token):
             return False
         _session = Session.GetSessionByToken(token)
@@ -68,6 +72,7 @@ class Session:
         return wrapper
 
     def UserAlreadyAuthenticated(user_id):
+        """Checks if user is already authenticated (has 1 or more tokens generated)"""
         for data in Session.active_sessions:
             if 'user_id' in data and data['user_id'] == user_id:
                 return True
