@@ -8,8 +8,10 @@ from modules.news import NewsEndpoint
 from modules.session import Session
 from config import Config, ProductionConfig
 from apscheduler.schedulers.background import BackgroundScheduler
+import colorama
 import atexit
 
+colorama.init()
 #App initialization
 app = Flask(__name__)
 api = Api(app)
