@@ -4,7 +4,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from requests import request
 from modules.database import Database
-from modules.args import createuser_args, getuser_args, authentication_args
 from datetime import datetime
 
 import secrets
